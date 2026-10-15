@@ -60,6 +60,52 @@ Some official-test analyses exclude samples labelled `UNK` and report results on
 
 Verify that feature rows are aligned with the image IDs and labels in the corresponding split files. Matching row counts alone do not establish correct alignment. For metadata experiments, verify that age and anatomical-site values are correctly mapped to image IDs and are available consistently for each split.
 
+## Data attribution and usage terms
+
+### ISIC 2019
+
+The ISIC 2019 dataset is subject to the license and attribution requirements stated by the official [ISIC Challenge data page](https://challenge.isic-archive.com/data/). The aggregate **“ISIC 2019: Training”** data must be attributed as follows to comply with the stated **CC BY-NC 4.0** attribution requirements:
+
+> **BCN_20000 Dataset:** © Department of Dermatology, Hospital Clínic de Barcelona.
+>
+> **HAM10000 Dataset:** © ViDIR Group, Department of Dermatology, Medical University of Vienna; https://doi.org/10.1038/sdata.2018.161
+>
+> **MSK Dataset:** © Anonymous; https://arxiv.org/abs/1710.05006; https://arxiv.org/abs/1902.03368
+
+The Creative Commons Attribution-NonCommercial 4.0 International license permits sharing and adaptation with appropriate attribution, but does not permit commercial use. Read the [license terms](https://creativecommons.org/licenses/by-nc/4.0/) and the [official ISIC dataset page](https://challenge.isic-archive.com/data/) before using or redistributing any dataset materials. This repository does not redistribute ISIC images or metadata files.
+
+When referencing ISIC 2019 in a publication, use the citations recommended by ISIC, including:
+
+- Tschandl P., Rosendahl C. & Kittler H. The HAM10000 dataset, a large collection of multi-source dermatoscopic images of common pigmented skin lesions. *Scientific Data* 5, 180161 (2018). https://doi.org/10.1038/sdata.2018.161
+- Codella N. C. F. et al. Skin Lesion Analysis Toward Melanoma Detection: A Challenge at the 2017 International Symposium on Biomedical Imaging (ISBI), Hosted by the International Skin Imaging Collaboration (ISIC). (2017). https://arxiv.org/abs/1710.05006
+- Hernández-Pérez C. et al. BCN20000: Dermoscopic lesions in the wild. *Scientific Data* 11, 641 (2024).
+
+Use the full attribution and citations appropriate to the exact ISIC 2019 subset used in your work. If results exclude `UNK` samples, state that the evaluation concerns the eight known classes and not the full nine-category challenge task.
+
+### PH² dataset
+
+The [official PH² database page](https://www.fc.up.pt/addi/ph2%20database.html) states that the dataset may be used for **research and educational purposes**, and that **redistribution and commercial use are not allowed**. Therefore, this repository provides neither PH² images nor a redistributed copy of its annotations. Obtain the dataset through the official PH² page and comply with its access and use terms.
+
+Please cite the original PH² paper when using this dataset:
+
+> Mendonça T., Ferreira P. M., Marques J. S., Marçal A. R. S. & Rozeira J. PH² - A dermoscopic image database for research and benchmarking. *2013 35th Annual International Conference of the IEEE Engineering in Medicine and Biology Society (EMBC)*, 5437–5440 (2013). https://doi.org/10.1109/EMBC.2013.6610779
+
+### Pretrained model architectures and checkpoints
+
+The notebooks use pretrained image backbones through [`timm`](https://github.com/huggingface/pytorch-image-models). The linked model cards identify the following licenses for the corresponding pretrained configurations:
+
+| Backbone | Model identifier used in this project | Model-card reference |
+|---|---|---|
+| Swin Transformer Base | `swin_base_patch4_window12_384_in22k` | [Swin-B model card](https://huggingface.co/timm/swin_base_patch4_window12_384.ms_in22k) — MIT |
+| EVA-02 Base | `eva02_base_patch14_448.mim_in22k_ft_in1k` | [EVA-02 model card](https://huggingface.co/timm/eva02_base_patch14_448.mim_in22k_ft_in1k) — MIT |
+| CoAtNet-1 | `coatnet_1_rw_224` | [CoAtNet model card](https://huggingface.co/timm/coatnet_1_rw_224.sw_in1k) — Apache-2.0 for the referenced `sw_in1k` checkpoint |
+
+The exact pretrained configuration resolved by `timm` can depend on the library version. Record the `timm` version and the resolved checkpoint/configuration for reproducibility. The pretrained weights are not redistributed in this repository. Check the relevant model card and license before redistributing any pretrained or fine-tuned checkpoint. Dataset terms, checkpoint licenses, and this repository's source-code licensing are separate.
+
+### Google Colab
+
+Google Colab is an optional hosted execution environment for the notebooks; it is not a dataset or software license granted by this repository. Use of Colab is governed by the applicable [Google Terms of Service](https://policies.google.com/terms) and [Google Colab Additional Terms of Service](https://research.google.com/colaboratory/tos_v6.html). Users remain responsible for complying with the licenses and attribution requirements of datasets, pretrained checkpoints, and third-party packages used in their own runs. The code in this repository does not grant rights to Google Colab, Google's trademarks, or any third-party content.
+
 ## Installation and environment
 
 The notebooks were developed for Python-based environments, including Google Colab. Some baseline training and feature-extraction stages benefit from a compatible GPU. Dependencies are collected in [`requirements.txt`](requirements.txt).
