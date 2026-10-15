@@ -1,5 +1,3 @@
-# skin-lesion-calibrated-ensemble
-Code and reproducibility resources for a calibrated multimodal ensemble for skin lesion diagnosis.
 # Skin Lesion Diagnosis: Calibrated Multimodal Ensemble
 
 Code and reproducibility resources for research on a calibrated multimodal ensemble for multi-class skin lesion diagnosis.
