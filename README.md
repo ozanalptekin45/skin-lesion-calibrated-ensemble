@@ -1,78 +1,110 @@
 # Skin Lesion Diagnosis: Calibrated Multimodal Ensemble
 
-Code and reproducibility resources for research on a calibrated multimodal ensemble for multi-class skin lesion diagnosis.
+Code and reproducibility resources for research on a calibrated multimodal ensemble for multi-class skin-lesion diagnosis.
 
 ## Project overview
 
-This repository contains research notebooks for developing and evaluating a skin-lesion classification pipeline that combines visual features from Swin Transformer, EVA-02, and CoAtNet with patient-age and anatomical-site metadata. The workflow includes feature processing, classifier training, probability fusion, temperature scaling, and evaluation.
+This repository contains research notebooks for developing and evaluating a skin-lesion classification workflow that combines visual features from Swin Transformer, EVA-02, and CoAtNet with patient-age and anatomical-site metadata. The workflow includes feature processing, classifier training, probability fusion, temperature scaling, and performance evaluation.
 
-The repository is intended to support methodological transparency and reproducibility. It is research code, not a clinically validated diagnostic system.
+This repository provides research code, not a clinically validated diagnostic system. Results depend on the exact data splits, feature-extraction checkpoints, metadata availability, software environment, and evaluation protocol.
 
 ## Repository contents
 
-The `notebooks/` directory contains the experiment notebooks. Their intended roles are:
+```text
+skin-lesion-calibrated-ensemble/
+├── README.md
+├── requirements.txt
+├── .gitignore
+└── notebooks/
+    ├── README.md
+    ├── 00_dataset_and_split_audit.ipynb
+    ├── 01_swin_baseline.ipynb
+    ├── 02_eva02_baseline.ipynb
+    ├── 03_coatnet_baseline.ipynb
+    ├── 04_post_feature_exploratory_comparisons.ipynb
+    ├── 05_final_metadata_and_calibration_ablation.ipynb
+    ├── 06_final_model.ipynb
+    ├── 07_official_test_strict_ablation.ipynb
+    └── 08_ph2_external_melanoma_transfer_colab.ipynb
+```
 
-- `00_dataset_and_split_audit.ipynb` — inspect dataset splits, class distributions, and metadata quality.
-- `01_swin_baseline.ipynb` — Swin baseline experiments.
-- `02_eva02_baseline.ipynb` — EVA-02 baseline experiments.
-- `03_coatnet_baseline.ipynb` — CoAtNet baseline experiments.
-- Post-feature notebooks — classifier, fusion, calibration, and ablation experiments.
-- Final evaluation notebook(s) — evaluation of a fixed model configuration.
-- `08_ph2_external_melanoma_transfer_colab.ipynb` — PH2 external-validation workflow.
+The intended role of each notebook is listed below. Some notebooks contain exploratory experiments; they should not be interpreted as part of the final evaluation protocol unless the manuscript explicitly identifies them as such.
 
-Notebook filenames and availability may evolve as the repository is organized. Each notebook should be read together with its own setup notes and stated experimental protocol. Exploratory experiments should not be treated as the final evaluation protocol unless explicitly identified as such.
+| Notebook | Purpose |
+|---|---|
+| `00_dataset_and_split_audit.ipynb` | Preliminary audit of split files, class distributions, and metadata completeness. |
+| `01_swin_baseline.ipynb` | Swin Transformer baseline training and evaluation. |
+| `02_eva02_baseline.ipynb` | EVA-02 baseline training and evaluation. |
+| `03_coatnet_baseline.ipynb` | CoAtNet baseline training and fine-tuning experiments. |
+| `04_post_feature_exploratory_comparisons.ipynb` | Exploratory post-feature classifier, fusion, and comparison experiments. Treat these results as exploratory unless explicitly pre-specified in the manuscript. |
+| `05_final_metadata_and_calibration_ablation.ipynb` | Metadata, ensemble, and calibration ablation experiments. |
+| `06_final_model.ipynb` | Final model pipeline and publication-oriented evaluation outputs. |
+| `07_official_test_strict_ablation.ipynb` | Experiments involving the official ISIC 2019 test data. Test results must not be used to choose or modify the final model. |
+| `08_ph2_external_melanoma_transfer_colab.ipynb` | External evaluation on PH2 for the melanoma/non-melanoma task. |
 
-## Datasets
+`requirements.txt` lists the Python packages used across the notebooks. The `notebooks/README.md` provides a short description of that directory.
 
-This repository does **not** distribute the ISIC 2019 or PH2 images, metadata files, extracted features, or trained checkpoints. Obtain datasets from their respective official sources and comply with their access and use terms.
+> **Repository consistency:** Keep the filenames in this table synchronized with the actual files in `notebooks/`. Upload `00_dataset_and_split_audit.ipynb` if it is not yet present in the repository.
 
-Before running experiments, prepare the data and feature files expected by the selected notebook. Check that image identifiers, labels, feature rows, and split files are aligned. Do not assume that matching row counts alone prove that the rows are aligned.
+## Datasets and input files
 
-The eight-class label mapping used by the final ISIC 2019 pipeline is:
+The repository does **not** distribute ISIC 2019 or PH2 images, metadata tables, extracted feature arrays, or trained checkpoints. Obtain datasets from their respective official sources and comply with applicable access and use conditions.
+
+Before running a notebook, review its setup cells and configure the paths to the split CSV files, metadata files, extracted features, checkpoints, and output directory. The required files differ by notebook. In particular, the baseline and post-feature notebooks may expect previously extracted `.npy` feature arrays.
+
+The final ISIC 2019 pipeline uses the following canonical eight-class order:
 
 `AK`, `BCC`, `BKL`, `DF`, `MEL`, `NV`, `SCC`, `VASC`.
 
-Some official-test analyses may exclude `UNK` samples and evaluate only the eight known classes. When applicable, results must be described explicitly as performance on the known-class subset, not as performance on the complete nine-category challenge task.
+Some official-test analyses exclude samples labelled `UNK` and report results on the eight known classes only. When that applies, describe the result as performance on the **known-class subset with `UNK` excluded**, not as performance on the complete nine-category challenge task.
+
+Verify that feature rows are aligned with the image IDs and labels in the corresponding split files. Matching row counts alone do not establish correct alignment. For metadata experiments, verify that age and anatomical-site values are correctly mapped to image IDs and are available consistently for each split.
+
+## Installation and environment
+
+The notebooks were developed for Python-based environments, including Google Colab. Some baseline training and feature-extraction stages benefit from a compatible GPU. Dependencies are collected in [`requirements.txt`](requirements.txt).
+
+### Google Colab
+
+1. Open a notebook in Google Colab and select a runtime appropriate for the experiment.
+2. Check the preinstalled PyTorch and TorchVision versions before installing packages. These two packages must be compatible with each other and with the selected runtime.
+3. Install the project dependencies in a code cell:
+
+   ```python
+   %pip install -r requirements.txt
+   ```
+
+4. If the installation changes core libraries, restart the runtime and verify the environment before running the notebook.
+5. Set the data, metadata, feature, checkpoint, and output paths in that notebook's configuration cell.
+6. Run the notebook from top to bottom in a clean runtime.
+
+For a local environment, create and activate a virtual environment first, then run `python -m pip install -r requirements.txt`. For GPU execution, install a PyTorch/TorchVision build compatible with the installed CUDA/runtime before executing the model notebooks.
+
+The dependency ranges are intended to support the repository's combined notebook set; they are not a substitute for recording the exact package versions used to produce a particular reported result. Each experiment should record its Python, PyTorch, TorchVision, CUDA, scikit-learn, and other relevant package versions.
 
 ## Experimental protocol
 
 The intended protocol separates model development from final evaluation:
 
-1. Inspect the data splits, class labels, and metadata.
-2. Train baseline feature/classifier pipelines using the development data.
-3. Select hyperparameters, fusion weights, and calibration parameters using training/validation data only, as specified by the relevant notebook.
-4. Freeze the selected configuration before evaluating it on the official test set.
-5. Use PH2 only for the external-validation protocol described in its notebook.
+1. Inspect the split files, class labels, feature alignment, and metadata completeness.
+2. Train baseline models using the designated development data.
+3. Select hyperparameters, ensemble weights, calibration parameters, and any decision rules using training/validation data only, according to the relevant notebook's protocol.
+4. Freeze the model configuration before evaluating it on the official test set.
+5. Use PH2 only according to the external-validation protocol described in its notebook.
 
-Do not use official-test labels or metrics to select architectures, hyperparameters, fusion weights, calibration parameters, or decision thresholds. Exploratory test-set comparisons, if retained in the repository, must be clearly distinguished from the pre-specified final evaluation.
+Do not use official-test labels or metrics to select architectures, hyperparameters, fusion weights, calibration parameters, or decision thresholds. Where exploratory test-set comparisons are retained, distinguish them from the pre-specified final evaluation and do not use them to revise the final model.
 
-## Environment and execution
+## Outputs and reproducibility
 
-These notebooks were developed for Python-based environments, including Google Colab, and some experiments require a compatible GPU. Requirements may vary by notebook and by pretrained backbone.
+Depending on the notebook, execution may generate classification metrics, calibration metrics (including ECE, NLL, and Brier score), ROC curves, confusion matrices, bootstrap confidence intervals, predictions, or parameter manifests. Generated outputs, extracted features, checkpoints, dataset files, and local environment paths should generally remain outside version control unless there is a clear scientific or sharing reason to include them and the relevant terms permit it.
 
-Before running a notebook:
+Never commit API keys, access tokens, credentials, private data, or unnecessary patient-level information. The `.gitignore` file excludes common local data, feature, checkpoint, and output files; check staged changes before each commit because `.gitignore` does not remove files that have already been committed.
 
-1. Review its first setup/configuration cells.
-2. Set the dataset, split, metadata, feature, and output paths for your environment.
-3. Install the compatible library versions required by that notebook.
-4. Confirm that the selected pretrained checkpoints and feature files correspond to the intended model variants and image preprocessing.
-5. Run the notebook from top to bottom in a clean runtime and verify that the saved results are generated without errors.
-
-A complete end-to-end run has not necessarily been verified for every notebook. Treat the notebooks as research resources and check the relevant execution notes before relying on results.
-
-## Reproducibility and outputs
-
-Experiments may use fixed random seeds, validation-based model selection, temperature scaling, ensemble-weight optimization, and bootstrap confidence intervals. The precise settings for each experiment are defined in its notebook. Reported tables and figures should be traceable to the corresponding evaluation code and a fixed model configuration.
-
-Generated outputs, extracted features, checkpoints, dataset files, and local environment paths should remain outside version control unless there is a clear need and the relevant sharing terms permit them. Never commit API keys, access tokens, credentials, or private patient-level information.
-
-## Limitations
-
-Performance estimates depend on the exact data split, preprocessing, feature-extraction checkpoints, metadata availability, and evaluation protocol. External validation and test-set evaluation do not, by themselves, establish clinical utility or readiness for deployment. Verify data alignment, metadata mapping, group/lesion separation, and checkpoint loading before interpreting results.
+Not every notebook has been verified in a complete end-to-end run on the same GPU/software environment. Static checks and notebook cleanup should not be interpreted as proof that every experiment runs successfully or reproduces a reported result. Before relying on a result, verify data alignment, metadata mapping, group/lesion separation, checkpoint loading, and the exact evaluation protocol.
 
 ## Citation
 
-If you use this code, please cite the associated manuscript once its final bibliographic details and DOI are available. Until then, manuscript citation information will be added here when confirmed.
+If you use this code, cite the associated manuscript once its final bibliographic details and DOI are available. The citation information can be added here when confirmed.
 
 ## License
 
@@ -80,4 +112,4 @@ A repository license has not yet been specified. Unless and until a license is a
 
 ## Contact
 
-For questions about the code or experimental protocol, please open a GitHub issue if repository access and project policy permit it.
+For questions about the code or experimental protocol, open a GitHub issue if repository access and project policy permit it.
