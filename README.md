@@ -32,7 +32,7 @@ The intended role of each notebook is listed below. Some notebooks contain explo
 
 | Notebook | Purpose |
 |---|---|
-| `00_dataset_and_split_audit.ipynb` | Preliminary audit of split files, class distributions, and metadata completeness. |
+| `` | Preliminary audit of split files, class distributions, and metadata completeness. |
 | `01_swin_baseline.ipynb` | Swin Transformer baseline training and evaluation. |
 | `02_eva02_baseline.ipynb` | EVA-02 baseline training and evaluation. |
 | `03_coatnet_baseline.ipynb` | CoAtNet baseline training and fine-tuning experiments. |
@@ -44,7 +44,6 @@ The intended role of each notebook is listed below. Some notebooks contain explo
 
 `requirements.txt` lists the Python packages used across the notebooks. The `notebooks/README.md` provides a short description of that directory.
 
-> **Repository consistency:** Keep the filenames in this table synchronized with the actual files in `notebooks/`. Upload `00_dataset_and_split_audit.ipynb` if it is not yet present in the repository.
 
 ## Datasets and input files
 
